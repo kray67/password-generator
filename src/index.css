@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.fadeShow {
+    opacity: 1;
+    padding-top: 1.25rem;
+}
+
+.fadeHide {
+    opacity: 0;
+    padding-top: 0;
+}
