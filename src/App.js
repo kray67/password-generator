@@ -75,16 +75,7 @@ function App() {
 		const typesCount = lower + upper + number + symbol
 		const typesArr = [{ lower }, { upper }, { number }, { symbol }].filter(item => Object.values(item)[0])
 		if (typesCount === 0) {
-			setShowError(true)
-			setTimeout(() => {
-				setFadeClass('fadeShow')
-			}, 0)
-			setTimeout(() => {
-				setFadeClass('fadeHide')
-				setTimeout(() => {
-					setShowError(false)
-				}, 500)
-			}, 2500)
+			errorModalHandler()
 		}
 		for (let i = 0; i < length; i++) {
 			typesArr.forEach(type => {
@@ -95,6 +86,19 @@ function App() {
 		return generatedPassword.slice(0, length)
 			.split('').sort(() => Math.random() - 0.5)
 			.join('')
+	}
+
+	const errorModalHandler = () => {
+		setShowError(true)
+		setTimeout(() => {
+			setFadeClass('fadeShow')
+		}, 0)
+		setTimeout(() => {
+			setFadeClass('fadeHide')
+			setTimeout(() => {
+				setShowError(false)
+			}, 500)
+		}, 2500)
 	}
 
 	return (
