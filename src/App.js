@@ -6,12 +6,11 @@ import SimpleButton from './components/inputs/SimpleButton'
 import FeedbackToast from './components/outputs/FeedbackToast'
 
 function App() {
-	const [showError, setShowError] = useState(false)
-	const [fadeClass, setFadeClass] = useState('fadeHide')
+	const [modalSettings, setModalSettings] = useState({ showModal: false, fadeClass: '', type: '', text: '' })
 	const [textValue, setTextValue] = useState('')
 	const [sliderValue, setSliderValue] = useState(8)
 	const [checkboxData, setCheckboxData] = useState([
-		{ id: 'number', primaryText: 'Include Numbers', secondaryText: '(1234)', isChecked: true },
+		{ id: 'number', primaryText: 'Include Numbers', secondaryText: '(1234)', isChecked: false },
 		{ id: 'symbol', primaryText: 'Include Symbols', secondaryText: '(@#$%)', isChecked: false },
 		{ id: 'lowercase', primaryText: 'Include Lowerase Characters', secondaryText: '(abcd)', isChecked: false },
 		{ id: 'uppercase', primaryText: 'Include Uppercase Characters', secondaryText: '(ABCD)', isChecked: false }
@@ -34,7 +33,7 @@ function App() {
 		)
 	}
 
-	// All the functions that are responsible to return a random value taht we will use to create password.
+	// All the functions that are responsible to return a random value that we will use to create password.
 	const getRandomNumber = () => {
 		return String.fromCharCode(Math.floor(secureMathRandom() * 10) + 48)
 	}
@@ -75,7 +74,7 @@ function App() {
 		const typesCount = lower + upper + number + symbol
 		const typesArr = [{ lower }, { upper }, { number }, { symbol }].filter(item => Object.values(item)[0])
 		if (typesCount === 0) {
-			errorModalHandler()
+			feedbackModalHandler('error', 'No parameters chosen!')
 		}
 		for (let i = 0; i < length; i++) {
 			typesArr.forEach(type => {
@@ -88,15 +87,15 @@ function App() {
 			.join('')
 	}
 
-	const errorModalHandler = () => {
-		setShowError(true)
+	const feedbackModalHandler = (type, text) => {
+		setModalSettings({ showModal: true, fadeClass: 'fadeHide', type: type, text: text })
 		setTimeout(() => {
-			setFadeClass('fadeShow')
+			setModalSettings({ showModal: true, fadeClass: 'fadeShow', type: type, text: text })
 		}, 0)
 		setTimeout(() => {
-			setFadeClass('fadeHide')
+			setModalSettings({ showModal: true, fadeClass: 'fadeHide', type: type, text: text })
 			setTimeout(() => {
-				setShowError(false)
+				setModalSettings({ showModal: false, fadeClass: '', type: '', text: '' })
 			}, 500)
 		}, 2500)
 	}
@@ -105,7 +104,7 @@ function App() {
 		<div className="App w-full h-screen flex flex-col items-center justify-start px-5 py-10 bg-red-100">
 			<h1 className=" py-5 text-2xl font-bold font-mono text-center">Password Generator</h1>
 
-			<Output textValue={textValue} />
+			<Output textValue={textValue} feedbackModalHandler={feedbackModalHandler} />
 
 			<div className="flex flex-col items-start gap-y-2">
 				<Slider sliderValue={sliderValue} sliderMoved={sliderMoved} />
@@ -117,7 +116,7 @@ function App() {
 
 			<SimpleButton generateNewPassword={getObjectsToGeneratePassword} />
 
-			{showError && <FeedbackToast fadeClass={fadeClass} type="error" text="No parameters chosen." />}
+			{modalSettings.showModal && <FeedbackToast fadeClass={modalSettings.fadeClass} type={modalSettings.type} text={modalSettings.text} />}
 
 			<p className="w-2/3 absolute bottom-2 text-center font-mono text-xs text-gray-600">Password Generator App made with <br/> Create-React-App and TailwindCSS</p>
 		</div>

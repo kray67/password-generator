@@ -1,25 +1,16 @@
 import { useState } from 'react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
-import FeedbackToast from "./FeedbackToast"
 
 const Output = (props) => {
-    const { textValue } = props
+    const { textValue, feedbackModalHandler } = props
     const [setValue] = useState(textValue);
-    const [copied, setCopied] = useState(false)
-    const [fadeClass, setFadeClass] = useState('fadeHide')
 
     const copyHandler = () => {
-        if (!textValue.length) return
-        setCopied(true)
-        setTimeout(() => {
-            setFadeClass('fadeShow')
-        }, 0);
-        setTimeout(() => {
-            setFadeClass('fadeHide')
-            setTimeout(() => {
-                setCopied(false)
-            }, 500);
-        }, 2500);
+        if (!textValue.length) {
+            feedbackModalHandler('error', 'Nothing to copy!')
+        } else {
+            feedbackModalHandler('success', 'Copied to clipboard!')
+        }
     }
     
 
@@ -32,13 +23,11 @@ const Output = (props) => {
                 value={textValue}
                 onChange={(e) => {
                     setValue(e.target.value)
-                    setCopied(false)
                 }}
             />
 
             <CopyToClipboard
                 options={{ debug: props.debug, message: "" }}
-                onCopy={() => setCopied(true)}
                 text={textValue}
             >
                 <img
@@ -48,8 +37,6 @@ const Output = (props) => {
                     onClick={() => copyHandler()}
                 />
             </CopyToClipboard>
-
-            {copied && <FeedbackToast fadeClass={fadeClass} type="success" text="Copied to clipboard!" />}
         </div>
     )
 }
